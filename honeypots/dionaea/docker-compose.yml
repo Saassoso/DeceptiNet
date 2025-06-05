@@ -1,0 +1,16 @@
+version: '3'
+services:
+  dionaea:
+    image: contexagon/dionaea
+    restart: always
+    ports:
+      - "21:21"
+      - "42:42"
+      - "69:69/udp"
+      - "135:135"
+      - "445:445"
+      - "1433:1433"
+      - "3306:3306"
+      - "5060:5060/udp"
+    volumes:
+      - ../../data/logs/dionaea:/opt/dionaea/var/dionaea
