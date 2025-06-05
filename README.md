@@ -10,4 +10,4 @@
 - Organize logs under `/data/logs`
 - Document initial setup and capture process
 
-
+pip install -r honeypots/flak-fake-login/requirements.txt
