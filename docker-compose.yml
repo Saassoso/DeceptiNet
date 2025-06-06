@@ -1,0 +1,18 @@
+services:
+  flask:
+    build: ./honeypots/flask-fake-login
+    container_name: deceptinet_flask
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data/logs/flask-fake-login:/app/logs
+    restart: unless-stopped
+
+  cowrie:
+    image: cowrie/cowrie
+    container_name: deceptinet_cowrie
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./data/logs/cowrie:/cowrie/var/log/cowrie
+    restart: unless-stopped
