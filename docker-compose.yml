@@ -16,3 +16,19 @@ services:
     volumes:
       - ./data/logs/cowrie:/cowrie/var/log/cowrie
     restart: unless-stopped
+
+  dionaea:
+    image: bradleyallen/dionaea
+    container_name: deceptinet_dionaea
+    restart: unless-stopped
+    ports:
+      - "21:21"
+      - "42:42"
+      - "69:69/udp"
+      - "135:135"
+      - "445:445"
+      - "1433:1433"
+      - "3306:3306"
+      - "5060:5060/udp"
+    volumes:
+      - ./data/logs/dionaea:/opt/dionaea/var/dionaea
