@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
 
   dionaea:
-    image: honeynet/dionaea
+    image: dinotools/dionaea
     container_name: dionaea
     network_mode: host 
     volumes:
