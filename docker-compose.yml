@@ -17,10 +17,10 @@ services:
     ports:
       - "21:21"
       - "23:23"
-      - "80:80"
-      - "135:135"
-      - "443:443"
-      - "445:445"
+      - "8080:80"
+      - "1135:135"
+      - "8443:443"
+      - "8445:445"
     volumes:
       - ./data/logs/dionaea:/opt/dionaea/var/dionaea
     restart: unless-stopped
