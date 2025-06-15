@@ -1,30 +1,35 @@
+version: '3.8'
+
 services:
   cowrie:
-        image: rayson/cowrie:20160907-1
-        build: cowrie
-        user: cowrie
-        ports:
-            - "22:2222/tcp"
-        volumes:
-            - ./config/cowrie-config/cowrie.cfg:/opt/cowrie/cowrie.cfg:Z
-            - cowrie-data:/opt/cowrie/data:Z
-            - cowrie-log:/opt/cowrie/log:Z
-
-    
-  dionaea:
-    image: dinotools/dionaea
-    container_name: dionaea
+    image: cowrie/cowrie:latest
+    container_name: cowrie-honeypot
     ports:
-      - "21:21"
-      - "23:23"
-      - "8080:80"
-      - "1135:135"
-      - "8443:443"
-      - "8445:445"
+      - "2222:2222/tcp"
     volumes:
-      - ./data/logs/dionaea:/opt/dionaea/var/dionaea
+      - ./config/cowrie-config/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
+      - ./data/logs/cowrie:/cowrie/cowrie-git/var/log/cowrie
+      - cowrie-data:/cowrie/cowrie-git/var/lib/cowrie
     restart: unless-stopped
-    
+    environment:
+      - COWRIE_UID=1000
+      - COWRIE_GID=1000
+
+  dionaea:
+    image: dinotools/dionaea:latest
+    container_name: dionaea-honeypot
+    ports:
+      - "21:21"     # FTP
+      - "23:23"     # Telnet  
+      - "8080:80"   # HTTP
+      - "8443:443"  # HTTPS
+      - "1135:135"  # SMB
+      - "8445:445"  # SMB
+    volumes:
+      - ./data/logs/dionaea:/opt/dionaea/var/log/dionaea
+      - ./data/dionaea:/opt/dionaea/var/lib/dionaea
+    restart: unless-stopped
+
   flask-fake-login:
     build:
       context: ./honeypots/flask-fake-login
@@ -38,5 +43,4 @@ services:
       - FLASK_ENV=production
 
 volumes:
-    cowrie-data: ./data/logs/cowrie/cowrie.json
-    cowrie-log: ./data/logs/cowrie/cowrie.log
+  cowrie-data:
