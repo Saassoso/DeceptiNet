@@ -1,5 +1,4 @@
 FROM alpine:3.4
-MAINTAINER Rayson Zhu <vfreex+docker@gmail.com>
 
 EXPOSE 2222
 CMD ["twistd", "-n", "-l", "log/cowrie.log", "--umask", "0077", "cowrie"]
@@ -15,6 +14,6 @@ RUN apk add --no-cache ca-certificates wget python py-pip py-twisted py-cryptogr
     chown -R cowrie: /opt/cowrie && \
     cp -a /opt/cowrie/cowrie.cfg.dist /opt/cowrie/cowrie.cfg && \
     apk del ca-certificates wget
-    python2.7 bin/createfs -o data/fs.pickle
+    python3 bin/createfs -o data/fs.pickle
 
-WORKDIR /opt/cowrie
+WORKDIR /opt/cowrieW

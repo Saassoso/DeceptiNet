@@ -147,3 +147,4 @@
 {"timestamp": "2025-06-12T21:01:10.332196", "event_type": "404_ERROR", "data": {"ip": "172.18.0.1", "user_agent": "curl/8.5.0", "requested_path": "/wp-admin", "method": "GET"}}
 {"timestamp": "2025-06-12T21:01:10.446402", "event_type": "404_ERROR", "data": {"ip": "172.18.0.1", "user_agent": "curl/8.5.0", "requested_path": "/.env", "method": "GET"}}
 {"timestamp": "2025-06-12T21:01:10.555438", "event_type": "ROBOTS_TXT_ACCESS", "data": {"ip": "172.18.0.1", "user_agent": "curl/8.5.0"}}
+{"timestamp": "2025-06-15T23:17:57.965807", "event_type": "SYSTEM_STARTUP", "data": {"event": "honeypot_startup", "hostname": "5f0e33eeb3ab", "log_dir": "/app/logs"}}

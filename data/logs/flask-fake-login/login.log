@@ -465,3 +465,10 @@
 2025-06-12 21:01:10 - INFO - ROBOTS_TXT_ACCESS: {'ip': '172.18.0.1', 'user_agent': 'curl/8.5.0'}
 2025-06-12 21:01:10 - INFO - {"timestamp": "2025-06-12T21:01:10.555438", "event_type": "ROBOTS_TXT_ACCESS", "data": {"ip": "172.18.0.1", "user_agent": "curl/8.5.0"}}
 2025-06-12 21:01:10 - INFO - 172.18.0.1 - - [12/Jun/2025 21:01:10] "GET /robots.txt HTTP/1.1" 200 -
+2025-06-15 23:17:57 - INFO - SYSTEM_STARTUP: {'event': 'honeypot_startup', 'hostname': '5f0e33eeb3ab', 'log_dir': '/app/logs'}
+2025-06-15 23:17:57 - INFO - {"timestamp": "2025-06-15T23:17:57.965807", "event_type": "SYSTEM_STARTUP", "data": {"event": "honeypot_startup", "hostname": "5f0e33eeb3ab", "log_dir": "/app/logs"}}
+2025-06-15 23:17:57 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.18.0.2:5000
+2025-06-15 23:17:57 - INFO - [33mPress CTRL+C to quit[0m
