@@ -1,81 +1,24 @@
-version: '3.8'
-
 services:
-  cowrie:
+  # Simple SSH Honeypot
+  ssh-honeypot:
     image: cowrie/cowrie:latest
-    container_name: cowrie-honeypot
+    container_name: ssh-honeypot
     ports:
-      - "2222:2222/tcp"
-      - "2223:2223/tcp"  # Telnet
+      - "2222:2222"
     volumes:
-      - ./config/cowrie-config/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
-      - ./data/logs/cowrie:/cowrie/cowrie-git/var/log/cowrie
-      - cowrie-data:/cowrie/cowrie-git/var/lib/cowrie
+      - ./logs/ssh:/cowrie/cowrie-git/var/log/cowrie
+      - ./config/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg
     restart: unless-stopped
     environment:
-      - COWRIE_UID=1000
-      - COWRIE_GID=1000
-    networks:
-      - honeypot-net
+      - COWRIE_HOSTNAME=server01
 
-  dionaea:
-    image: dinotools/dionaea:latest
-    container_name: dionaea-honeypot
+
+  # Simple Web Honeypot
+  web-honeypot:
+    build: ./web-honeypot
+    container_name: web-honeypot
     ports:
-      - "21:21"     # FTP
-      - "23:23"     # Telnet (different from cowrie)
-      - "8080:80"   # HTTP
-      - "8443:443"  # HTTPS
-      - "1135:135"  # SMB
-      - "8445:445"  # SMB
-      - "69:69/udp" # TFTP
+      - "8080:5000"
     volumes:
-      - ./data/logs/dionaea:/opt/dionaea/var/log/dionaea
-      - ./data/dionaea:/opt/dionaea/var/lib/dionaea
+      - ./logs/web:/app/logs
     restart: unless-stopped
-    networks:
-      - honeypot-net
-
-  flask-fake-login:
-    build:
-      context: ./honeypots/flask-fake-login
-      dockerfile: Dockerfile
-    container_name: flask-fake-login
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./data/logs/flask-fake-login:/app/logs
-    restart: unless-stopped
-    environment:
-      - FLASK_ENV=production
-      - PYTHONUNBUFFERED=1
-    networks:
-      - honeypot-net
-
-  # Optional: Log aggregator
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.8.0
-    container_name: honeypot-logstash
-    volumes:
-      - ./config/logstash:/usr/share/logstash/pipeline
-      - ./data/logs:/var/log/honeypots:ro
-    environment:
-      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
-    networks:
-      - honeypot-net
-    depends_on:
-      - cowrie
-      - dionaea
-      - flask-fake-login
-    profiles:
-      - logging  # Only start with --profile logging
-
-volumes:
-  cowrie-data:
-
-networks:
-  honeypot-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
