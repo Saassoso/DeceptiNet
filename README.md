@@ -1,4 +1,4 @@
-# 🕵️‍♂️ Decetinet – Honeypot-Based Intrusion Detection & Analysis
+# 🕵️‍♂️ Deceptinet – Honeypot-Based Intrusion Detection & Analysis
 
 Decetinet is a **containerized multi-service honeypot environment** designed for capturing, analyzing, and enriching attacker activity data.  
 It currently includes an **SSH honeypot** (Cowrie) and can be extended with web, SMB, RDP, and other protocol traps.  
