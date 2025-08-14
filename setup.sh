@@ -20,6 +20,8 @@ mkdir -p logs/web
 mkdir -p logs/ssh
 # Make scripts executable
 chmod +x analyze.py
+chmod +x test.py
+chmod +x reports.py
 
 echo "Setup complete!"
 echo ""
