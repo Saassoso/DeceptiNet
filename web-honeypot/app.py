@@ -5,6 +5,7 @@ import os
 import random
 from datetime import datetime, timedelta
 import hashlib
+import time
 
 app = Flask(__name__)
 
@@ -27,7 +28,7 @@ def log_attack(event_type, data):
    
     print(f"[ATTACK] {event_type} from {request.remote_addr}")
 
-# Modern corporate login page with CDN Tailwind CSS
+# Fixed login page with proper Tailwind CSS CDN
 LOGIN_HTML = '''
 <!DOCTYPE html>
 <html lang="en">
@@ -35,125 +36,197 @@ LOGIN_HTML = '''
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureCorp - Employee Portal</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- FIXED: Proper Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alternative CDN if above doesn't work -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.3.0/tailwind.min.css" rel="stylesheet"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
+        /* Custom animations and effects */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in { animation: fadeIn 0.8s ease-out; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .fade-in { 
+            animation: fadeIn 0.8s ease-out forwards; 
+            opacity: 0;
+        }
+        
+        .slide-in { 
+            animation: slideIn 0.6s ease-out forwards; 
+            opacity: 0;
+        }
+        
+        .gradient-bg { 
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
         .glass-effect { 
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
-<body class="min-h-screen gradient-bg flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
+<body class="min-h-screen gradient-bg flex items-center justify-center p-4 relative overflow-hidden">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-1/2 -left-1/2 w-full h-full bg-white opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-1/2 -right-1/2 w-full h-full bg-purple-300 opacity-10 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="w-full max-w-md relative z-10">
         <!-- Company Header -->
         <div class="text-center mb-8 fade-in">
-            <div class="bg-white bg-opacity-20 w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                <i class="fas fa-shield-alt text-white text-3xl"></i>
+            <div class="bg-white bg-opacity-20 w-24 h-24 rounded-3xl mx-auto mb-6 flex items-center justify-center floating backdrop-blur-sm border border-white border-opacity-30">
+                <i class="fas fa-shield-alt text-white text-4xl drop-shadow-lg"></i>
             </div>
-            <h1 class="text-white text-3xl font-bold mb-2">SecureCorp</h1>
-            <p class="text-white text-opacity-90">Enterprise Security Portal</p>
+            <h1 class="text-white text-4xl font-bold mb-2 drop-shadow-lg">SecureCorp</h1>
+            <p class="text-white text-opacity-90 text-lg font-medium">Enterprise Security Portal</p>
         </div>
 
         <!-- Login Form -->
-        <div class="glass-effect rounded-2xl shadow-2xl overflow-hidden fade-in">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-center text-white">
-                <h2 class="text-2xl font-semibold mb-2">Employee Login</h2>
-                <p class="text-blue-100">Access your secure dashboard</p>
+        <div class="glass-effect rounded-3xl shadow-2xl overflow-hidden slide-in" style="animation-delay: 0.2s;">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 p-8 text-center text-white relative">
+                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-2">Employee Login</h2>
+                    <p class="text-blue-100 font-medium">Access your secure dashboard</p>
+                </div>
             </div>
 
-            <form method="POST" class="p-8 space-y-6">
+            <form method="POST" class="p-8 space-y-8">
                 {% if error %}
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
-                        <div>
-                            <p class="text-red-800 font-semibold">Authentication Failed</p>
-                            <p class="text-red-600 text-sm">Invalid credentials. Access attempt logged.</p>
+                <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-xl shadow-sm slide-in" style="animation-delay: 0.4s;">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-red-800 font-bold text-lg">Authentication Failed</p>
+                            <p class="text-red-600 mt-1">Invalid credentials. Access attempt has been logged for security review.</p>
                         </div>
                     </div>
                 </div>
                 {% endif %}
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2" for="username">
-                            <i class="fas fa-user mr-2"></i>Username
+                <div class="space-y-6">
+                    <!-- Username Field -->
+                    <div class="slide-in" style="animation-delay: 0.3s;">
+                        <label class="block text-gray-700 font-bold mb-3 text-lg" for="username">
+                            <i class="fas fa-user mr-3 text-blue-600"></i>Username
                         </label>
                         <input 
                             type="text" 
                             id="username" 
                             name="username" 
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                            placeholder="Enter your username"
+                            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 input-glow transition-all duration-300 text-lg font-medium bg-white shadow-sm"
+                            placeholder="Enter your employee ID"
                             required
                         >
                     </div>
 
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2" for="password">
-                            <i class="fas fa-lock mr-2"></i>Password
+                    <!-- Password Field -->
+                    <div class="slide-in" style="animation-delay: 0.4s;">
+                        <label class="block text-gray-700 font-bold mb-3 text-lg" for="password">
+                            <i class="fas fa-lock mr-3 text-purple-600"></i>Password
                         </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                            placeholder="Enter your password"
-                            required
-                        >
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 input-glow transition-all duration-300 text-lg font-medium bg-white shadow-sm pr-12"
+                                placeholder="Enter your password"
+                                required
+                            >
+                            <button type="button" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    class="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-4 px-6 rounded-xl btn-hover transition-all duration-300 shadow-lg text-lg slide-in"
+                    style="animation-delay: 0.5s;"
                     id="loginBtn"
                 >
                     <span class="flex items-center justify-center">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        <span id="btnText">Sign In</span>
-                        <i class="fas fa-spinner fa-spin ml-2 hidden" id="spinner"></i>
+                        <i class="fas fa-sign-in-alt mr-3"></i>
+                        <span id="btnText">Sign In Securely</span>
+                        <i class="fas fa-spinner fa-spin ml-3 hidden" id="spinner"></i>
                     </span>
                 </button>
 
-                <div class="flex justify-between items-center text-sm">
-                    <a href="/forgot-password" class="text-blue-600 hover:text-blue-800 transition-colors">
-                        <i class="fas fa-key mr-1"></i>Forgot Password?
+                <!-- Links -->
+                <div class="flex justify-between items-center pt-4 slide-in" style="animation-delay: 0.6s;">
+                    <a href="/forgot-password" class="text-blue-600 hover:text-blue-800 transition-colors font-medium flex items-center">
+                        <i class="fas fa-key mr-2"></i>Forgot Password?
                     </a>
-                    <a href="/support" class="text-gray-600 hover:text-gray-800 transition-colors">
-                        <i class="fas fa-question-circle mr-1"></i>Need Help?
+                    <a href="/support" class="text-gray-600 hover:text-gray-800 transition-colors font-medium flex items-center">
+                        <i class="fas fa-question-circle mr-2"></i>Need Help?
                     </a>
                 </div>
             </form>
 
             <!-- Footer -->
-            <div class="bg-gray-50 px-8 py-4 text-center border-t">
-                <p class="text-gray-500 text-xs">
+            <div class="bg-gray-50 px-8 py-6 text-center border-t border-gray-100">
+                <p class="text-gray-500 text-sm font-medium">
                     &copy; 2024 SecureCorp Inc. All rights reserved. 
-                    <a href="/privacy" class="text-blue-600 hover:underline ml-1">Privacy Policy</a>
+                    <a href="/privacy" class="text-blue-600 hover:underline ml-2 font-semibold">Privacy Policy</a>
                 </p>
             </div>
         </div>
 
         <!-- Security Notice -->
-        <div class="mt-6 text-center fade-in">
-            <div class="bg-white bg-opacity-10 rounded-lg p-4 text-white text-sm">
-                <i class="fas fa-info-circle mr-2"></i>
-                This is a secure connection. Your login attempts are monitored for security purposes.
+        <div class="mt-8 text-center fade-in" style="animation-delay: 0.7s;">
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6 text-white border border-white border-opacity-20">
+                <i class="fas fa-shield-alt mr-3 text-yellow-300"></i>
+                <span class="font-medium">This is a secure connection. All login attempts are monitored and logged for security compliance.</span>
             </div>
         </div>
     </div>
     
     <script>
-        // Form submission handling
+        // Form submission with enhanced UX
         document.querySelector('form').addEventListener('submit', function(e) {
             const btn = document.getElementById('loginBtn');
             const btnText = document.getElementById('btnText');
@@ -161,14 +234,18 @@ LOGIN_HTML = '''
             
             // Show loading state
             btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
             btnText.textContent = 'Authenticating...';
             spinner.classList.remove('hidden');
-            btn.classList.add('opacity-75');
             
-            // Simulate processing time
+            // Prevent form from submitting immediately
+            e.preventDefault();
+            
+            // Simulate realistic authentication delay
             setTimeout(() => {
-                // Form will submit normally
-            }, 1500);
+                // Now submit the form
+                e.target.submit();
+            }, 2000);
         });
 
         // Enhanced input interactions
@@ -180,24 +257,50 @@ LOGIN_HTML = '''
             input.addEventListener('blur', function() {
                 this.parentElement.classList.remove('transform', 'scale-105');
             });
-        });
-
-        // Add floating labels effect
-        document.querySelectorAll('input').forEach(input => {
+            
+            // Add typing effect
             input.addEventListener('input', function() {
                 if (this.value.length > 0) {
-                    this.classList.add('has-content');
+                    this.classList.add('bg-blue-50');
                 } else {
-                    this.classList.remove('has-content');
+                    this.classList.remove('bg-blue-50');
                 }
             });
+        });
+
+        // Password visibility toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Add subtle parallax effect to background elements
+        document.addEventListener('mousemove', function(e) {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            const bg1 = document.querySelector('.absolute.-top-1\\/2');
+            const bg2 = document.querySelector('.absolute.-bottom-1\\/2');
+            
+            if (bg1) bg1.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
+            if (bg2) bg2.style.transform = `translate(${-mouseX * 15}px, ${-mouseY * 15}px)`;
         });
     </script>
 </body>
 </html>
 '''
 
-# Modern admin dashboard honeypot
+# Updated admin page with proper styling
 ADMIN_HTML = '''
 <!DOCTYPE html>
 <html lang="en">
@@ -205,122 +308,172 @@ ADMIN_HTML = '''
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureCorp Admin Dashboard - Access Denied</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #7c2d12 100%); }
-        .pulse-red { animation: pulse-red 2s infinite; }
+        .pulse-red { 
+            animation: pulse-red 2s infinite;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
         @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        @keyframes glitch {
+            0%, 90% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-900 min-h-screen text-white">
     <!-- Header -->
-    <nav class="bg-gray-800 shadow-lg">
+    <nav class="bg-gray-800 shadow-2xl border-b border-red-600">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-red-600 w-10 h-10 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-shield-alt text-white"></i>
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-6">
+                    <div class="bg-red-600 w-12 h-12 rounded-xl flex items-center justify-center pulse-red">
+                        <i class="fas fa-shield-alt text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-white text-xl font-bold">SecureCorp Admin</h1>
-                        <p class="text-gray-300 text-sm">Security Management Portal</p>
+                        <h1 class="text-white text-2xl font-bold">SecureCorp Admin Portal</h1>
+                        <p class="text-gray-300 text-sm font-medium">Security Management Dashboard</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4 text-red-400">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span class="font-semibold">UNAUTHORIZED ACCESS</span>
+                <div class="flex items-center space-x-4 text-red-400 glitch">
+                    <i class="fas fa-exclamation-triangle text-2xl"></i>
+                    <span class="font-bold text-lg">UNAUTHORIZED ACCESS DETECTED</span>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto py-12 px-4">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div class="max-w-6xl mx-auto py-16 px-4">
+        <div class="bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-red-500">
             <!-- Warning Header -->
-            <div class="bg-red-600 text-white p-6 text-center">
-                <div class="pulse-red w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-ban text-3xl"></i>
+            <div class="bg-gradient-to-r from-red-600 to-red-800 text-white p-8 text-center relative">
+                <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+                <div class="relative z-10">
+                    <div class="pulse-red w-24 h-24 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-ban text-4xl"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">ACCESS DENIED</h2>
+                    <p class="text-red-100 text-xl font-semibold">HTTP 403 - Forbidden Resource</p>
                 </div>
-                <h2 class="text-3xl font-bold mb-2">Access Denied</h2>
-                <p class="text-red-100">HTTP 403 - Forbidden</p>
             </div>
 
             <!-- Content -->
-            <div class="p-8">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">
-                        You do not have permission to access this resource
+            <div class="p-12">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-white mb-6">
+                        Insufficient Privileges
                     </h3>
-                    <p class="text-gray-600 text-lg leading-relaxed">
-                        This area is restricted to authorized SecureCorp administrators only. 
-                        All access attempts are monitored and logged for security purposes.
+                    <p class="text-gray-300 text-xl leading-relaxed max-w-3xl mx-auto">
+                        This administrative interface is restricted to authorized SecureCorp system administrators only. 
+                        Your access attempt has been logged and security personnel have been notified.
                     </p>
                 </div>
 
-                <!-- Security Info -->
-                <div class="grid md:grid-cols-2 gap-6 mb-8">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                <!-- Security Info Grid -->
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-yellow-900 bg-opacity-50 border border-yellow-600 rounded-2xl p-6 backdrop-blur-sm">
                         <div class="flex items-start">
-                            <i class="fas fa-info-circle text-yellow-600 text-xl mr-3 mt-1"></i>
+                            <i class="fas fa-exclamation-triangle text-yellow-400 text-2xl mr-4 mt-1"></i>
                             <div>
-                                <h4 class="font-semibold text-yellow-800 mb-2">Security Notice</h4>
-                                <p class="text-yellow-700 text-sm">
-                                    This incident has been logged with your IP address, timestamp, and browser information.
+                                <h4 class="font-bold text-yellow-300 mb-3 text-lg">Security Alert</h4>
+                                <p class="text-yellow-200 text-sm leading-relaxed">
+                                    This incident has been automatically logged with your IP address, browser fingerprint, 
+                                    and access timestamp for security analysis.
                                 </p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                    <div class="bg-blue-900 bg-opacity-50 border border-blue-600 rounded-2xl p-6 backdrop-blur-sm">
                         <div class="flex items-start">
-                            <i class="fas fa-user-shield text-blue-600 text-xl mr-3 mt-1"></i>
+                            <i class="fas fa-user-shield text-blue-400 text-2xl mr-4 mt-1"></i>
                             <div>
-                                <h4 class="font-semibold text-blue-800 mb-2">Need Access?</h4>
-                                <p class="text-blue-700 text-sm">
-                                    Contact your system administrator to request proper credentials.
+                                <h4 class="font-bold text-blue-300 mb-3 text-lg">Need Access?</h4>
+                                <p class="text-blue-200 text-sm leading-relaxed">
+                                    Administrator credentials are required. Contact your IT security team 
+                                    or system administrator for proper authorization.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900 bg-opacity-50 border border-red-600 rounded-2xl p-6 backdrop-blur-sm">
+                        <div class="flex items-start">
+                            <i class="fas fa-eye text-red-400 text-2xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-red-300 mb-3 text-lg">Monitoring Active</h4>
+                                <p class="text-red-200 text-sm leading-relaxed">
+                                    All access attempts to this system are actively monitored 
+                                    and may trigger additional security measures.
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- System Info -->
+                <div class="bg-gray-700 rounded-2xl p-8 mb-8 border border-gray-600">
+                    <h4 class="text-xl font-bold text-white mb-4 flex items-center">
+                        <i class="fas fa-server mr-3 text-purple-400"></i>
+                        Incident Details
+                    </h4>
+                    <div class="grid md:grid-cols-2 gap-6 text-sm font-mono">
+                        <div class="space-y-2">
+                            <p class="text-gray-300"><span class="text-purple-400">Timestamp:</span> <span id="timestamp"></span></p>
+                            <p class="text-gray-300"><span class="text-purple-400">Request ID:</span> <span id="requestId"></span></p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-gray-300"><span class="text-purple-400">Security Level:</span> <span class="text-red-400">CRITICAL</span></p>
+                            <p class="text-gray-300"><span class="text-purple-400">Status:</span> <span class="text-red-400">ACCESS_DENIED</span></p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Action Buttons -->
-                <div class="text-center space-x-4">
-                    <a href="/" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-home mr-2"></i>
-                        Return to Login
+                <div class="text-center space-x-6">
+                    <a href="/" class="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        <i class="fas fa-home mr-3"></i>
+                        Return to Login Portal
                     </a>
-                    <a href="/support" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-question-circle mr-2"></i>
-                        Contact Support
+                    <a href="/support" class="inline-flex items-center px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        <i class="fas fa-headset mr-3"></i>
+                        Contact IT Support
                     </a>
                 </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="bg-gray-50 px-8 py-4 border-t text-center">
-                <p class="text-gray-500 text-sm">
-                    <i class="fas fa-clock mr-1"></i>
-                    Incident logged at: <span class="font-mono">{{ timestamp }}</span>
-                </p>
             </div>
         </div>
     </div>
 
     <script>
-        // Display current timestamp
+        // Display current timestamp and generate request ID
         document.addEventListener('DOMContentLoaded', function() {
             const timestamp = new Date().toISOString();
-            const timestampElement = document.querySelector('[class*="font-mono"]');
-            if (timestampElement) {
-                timestampElement.textContent = timestamp;
-            }
+            const requestId = 'REQ-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            
+            document.getElementById('timestamp').textContent = timestamp;
+            document.getElementById('requestId').textContent = requestId;
         });
+
+        // Add some dramatic effects
+        setInterval(() => {
+            const alerts = document.querySelectorAll('.pulse-red');
+            alerts.forEach(alert => {
+                alert.style.transform = `scale(${0.95 + Math.random() * 0.1})`;
+            });
+        }, 2000);
     </script>
 </body>
 </html>
@@ -339,8 +492,7 @@ def login():
         })
        
         # Add realistic delay for failed login
-        import time
-        time.sleep(random.uniform(1.5, 3.0))
+        time.sleep(random.uniform(2.0, 3.5))
        
         return render_template_string(LOGIN_HTML, error=True)
    
@@ -418,7 +570,7 @@ def env_file():
 @app.route('/wp-admin')
 @app.route('/wp-login.php')
 @app.route('/wordpress')
-def wordpress_probes(path=None):
+def wordpress_probes():
     log_attack('WORDPRESS_PROBE', {'path': request.path})
     return "Not Found", 404
 
@@ -464,4 +616,5 @@ if __name__ == '__main__':
     print("🍯 Starting Advanced Web Honeypot on port 5000...")
     print("📊 Logs will be saved to /app/logs/attacks.json")
     print("🎭 Masquerading as SecureCorp Employee Portal")
+    print("✅ Fixed Tailwind CSS integration")
     app.run(host='0.0.0.0', port=5000, debug=False)
