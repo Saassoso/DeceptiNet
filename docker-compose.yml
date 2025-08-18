@@ -6,7 +6,7 @@ services:
     ports:
       - "2222:2222"
     volumes:
-      - ./logs/ssh:/cowrie/cowrie-git/var/log/cowrie
+      - /var/log/honeypot:/cowrie/cowrie-git/var/log/cowrie
       - ./config/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg
     restart: unless-stopped
     environment:
@@ -20,5 +20,5 @@ services:
     ports:
       - "8080:5000"
     volumes:
-      - ./logs/web:/app/logs
+      - /var/log/honeypot:/app/logs
     restart: unless-stopped
